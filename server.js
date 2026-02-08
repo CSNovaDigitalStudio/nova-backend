@@ -30,7 +30,7 @@ const upload = multer({ storage });
 ====================== */
 
 const LeadSchema = new mongoose.Schema({
-  propertyId: Number,
+  propertyId: String,
   propertyTitle: String,
   clientName: String,
   clientEmail: String,
