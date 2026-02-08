@@ -124,3 +124,19 @@ app.post("/api/upload", upload.array("images", 10), async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Update property availability
+app.put("/api/properties/:id/status", async (req, res) => {
+  try {
+    const property = await Property.findByIdAndUpdate(
+      req.params.id,
+      { status: req.body.status },
+      { new: true }
+    );
+
+    res.json(property);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
