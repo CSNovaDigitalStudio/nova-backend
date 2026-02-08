@@ -125,6 +125,28 @@ app.post("/api/upload", upload.array("images", 10), async (req, res) => {
   }
 });
 
+// Delete property and its images
+app.delete("/api/properties/:id", async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    // Delete images from Cloudinary
+    for (let imageUrl of property.images) {
+      const publicId = imageUrl.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy("nova-estates/" + publicId);
+    }
+
+    await Property.findByIdAndDelete(req.params.id);
+
+    res.json({ message: "Property deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Update property availability
 app.put("/api/properties/:id/status", async (req, res) => {
   try {
@@ -139,4 +161,5 @@ app.put("/api/properties/:id/status", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
